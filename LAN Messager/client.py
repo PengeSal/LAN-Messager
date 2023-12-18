@@ -3,7 +3,7 @@ import socket
 import subprocess
 import shutil
 import tkinter as tk
-import threading
+import threading, webbrowser
 import os
 import sys
 import ctypes, random
@@ -415,11 +415,17 @@ joinbutton.config(width=20, height=0, fg = "gray", bg = "gainsboro", activebackg
 joinbutton.grid(row=0, column=1)
 
 
-text=Label(frame1, text=" carbon positive since 2023", font=("arial", 16), bg="white", fg="lightgray")
-text.pack(pady=20, side= TOP, anchor="w")
+def callback(url):
+    webbrowser.open_new_tab(url)
+
+text=Label(frame1, text="_________________________________________________________________________\n\n Carbon positive since 2023:                        \n https://github.com/PengeSal/LAN-Messager\n_________________________________________________________________________", font=("arial", 16), bg="white", fg="lightgray")
+text.pack(pady=25, side= TOP, anchor="w")
+text.bind("<Button-1>", lambda e: callback("https://github.com/PengeSal/LAN-Messager"))
+
+
+
 
 root.mainloop()
-
 
 
 
