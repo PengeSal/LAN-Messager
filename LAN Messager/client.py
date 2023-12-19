@@ -1,138 +1,4 @@
-
 import socket
-import subprocess
-import shutil
-import tkinter as tk
-import threading, webbrowser
-import os
-import sys
-import ctypes, random
-from tkinter import *
-from tkinter.ttk import Style, Frame as fp
-from tkinter import scrolledtext, ttk, filedialog, font
-from inspect import getsourcefile
-from os.path import abspath
-from functools import reduce
-import time
-import os
-import time
-import importlib.util
-from pip._internal import main as pipmain
-import winreg as reg
-from tkinter import Tk, font
-
-
-root = Tk()
-root['bg']="white"
-
-def toggle(event):
-    if event.type == EventType.Map:
-        root.deiconify()
-        root.lift()
-    else:
-         root.withdraw()
-
-top = Toplevel(root)
-top.geometry('0x0+10000+10000') 
-top.protocol('WM_DELETE_WINDOW', root.destroy)
-top.bind("<Map>", toggle)
-top.bind("<Unmap>", toggle)
-top.title(f"LAN Messager | {socket.gethostname()}")
-
-#icon = PhotoImage(file = "icon.ico")
-root.geometry("700x850")
-root.overrideredirect(True)
-#root.iconphoto(True, icon)
- 
-buttonframe=Frame(root)
-
-for i in range(5):
-    buttonframe.columnconfigure(1, weight=1)
-
-def on_mouse_press(evt):
-    global xp, yp
-    xp = evt.x
-    yp = evt.y
-
-def on_mouse_drag(evt):
-    deltax = evt.x - xp
-    deltay = evt.y - yp
-    x = root.winfo_x() + deltax
-    y = root.winfo_y() + deltay
-    root.geometry(f"+{x}+{y}")
-
-def quitpy():
-    root.destroy()
-
-
-buttonframe.bind('<B1-Motion>', on_mouse_drag)
-buttonframe.bind('<ButtonPress-1>', on_mouse_press)
-
-buttonframe.pack(padx=0, pady=0, fill="x")
-buttonframe.config(width=3, height=0, bg = "gainsboro", highlightthickness=1, highlightbackground="gray")
-
-button1=Button(buttonframe, text=" × ", font=("arial", 13))
-button1.config(width=3, height=0, fg = "black", bg = "gainsboro", activebackground="red", activeforeground="white", borderwidth=0, command=quitpy)
-button1.grid(row=0, column=7)
-
-button3=Button(buttonframe, text=" - ", font=("arial", 13))
-button3.config(width=3, height=0, fg = "black", bg = "gainsboro", activebackground="lightgray", activeforeground="white", borderwidth=0, command=top.iconify)
-button3.grid(row=0, column=6)
-
-myfont = font.Font(family="SimSun", size=15)
-
-text=Label(buttonframe, text=f"LAN Messager | {socket.gethostname()}", font=myfont, fg = "gray", bg = "gainsboro")
-text.place(x=10,y=2)
-
-text.bind('<B1-Motion>', on_mouse_drag)
-text.bind('<ButtonPress-1>', on_mouse_press)
-
-frame1 = Frame(root, highlightthickness=1, highlightbackground="gray")
-frame1['bg']="white"
-frame1.pack(fill=tk.BOTH, expand=True)
-
-text1=Label(frame1, text="\n\n", font=("arial", 16), bg="white", fg="#97d180")
-text1.pack(pady=20, side= TOP, anchor="w")
-
-bg = PhotoImage(file= "logo.png")
-frame = Label(frame1, image=bg)
-frame.pack(pady=25)
-frame['bg']="white"
-frame.pack(fill=tk.BOTH, expand=False)
-
-
-frame2 = Label(frame1, image=bg)
-
-
-#STARTAGAINWAS HERE 
-
-
-buttonframe2=Frame(frame1)
-buttonframe2.config(bg="white")
-buttonframe2.columnconfigure(0, weight=1)
-buttonframe2.columnconfigure(1, weight=1)
-buttonframe2.pack(fill=tk.BOTH)
-buttonframe2.pack(fill=tk.BOTH, expand=True)
-buttonframe2.pack()
-
-def host():
-    pass
-
-
-myfont = font.Font(family="SimSun", size=20, weight="bold")
-
-hostbutton=Button(buttonframe2, text="\nHOST CONVERSATION\n", font=myfont)
-hostbutton.config(width=20, height=0, fg = "gray", bg = "gainsboro", activebackground="lightgray", activeforeground="white", borderwidth=2, command=host)
-hostbutton.grid(row=0, column=0)
-
-
-
-
-
-def join():
-    entrybutton.config(state=DISABLED)
-    try:
-        server_hostname = enternimport socket
 import subprocess
 import shutil
 import tkinter as tk
@@ -268,7 +134,7 @@ wrapper.configure(borderwidth=0)
 style = ttk.Style()
 style.theme_use('clam')
 
-style.configure("Vertical.TScrollbar", gripcount=0, background="white", darkcolor="gainsboro", lightcolor="gainsboro", troughcolor="gainsboro", bordercolor="gainsboro", arrowcolor="black")
+style.configure("Vertical.TScrollbar", gripcount=0, background="gray95", darkcolor="gainsboro", lightcolor="white", troughcolor="gainsboro", bordercolor="gray", arrowcolor="black")
             
 mycanvas=Canvas(wrapper, width=600,height=200, bg="white")
 
@@ -298,12 +164,17 @@ textbox = Entry(textboxborder, font = ("cambria 20"), width = 25)
 submit = Button(root, text=("SEND"), font = ("ARIAL 15"), width = 7, bg = "gainsboro", activebackground="lightgray", activeforeground="white")
 
 
+
+opensockets = []
+
 def join():
     entrybutton.config(state=DISABLED)
     try:
         server_hostname = entername.get()
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((server_hostname, 5555))
+
+        opensockets.append(client_socket)
         
         client_socket.close()
         error.config(text=(""))
@@ -318,30 +189,33 @@ def join():
             error.config(text=(""))
             
             def receive_messages():
-                while True:
-                    reply = client_socket.recv(1024).decode('utf-8')
-                    input_string = f" >> {reply}"
-
-                  
-                    chars_per_line = 75
+                try:
+                    while True:
+                        reply = client_socket2.recv(1024).decode('utf-8')
+                        input_string = f" >> {reply}"
 
                     
-                    lines = [input_string[i:i + chars_per_line] for i in range(0, len(input_string), chars_per_line)]
+                        chars_per_line = 75
 
-                    for line in lines:
-                        label = Text(myframe, wrap="word", font=("cambria 16"), width = 55, height = round((len(line)/55)), borderwidth=0)
-                        label.pack(anchor="w")                   
-                        label.insert(tk.END, line)
-                        label.config(state=DISABLED)
+                        
+                        lines = [input_string[i:i + chars_per_line] for i in range(0, len(input_string), chars_per_line)]
 
-
-                    mycanvas.update_idletasks()
-                    mycanvas.config(scrollregion=mycanvas.bbox("all"))
-                    mycanvas.yview_moveto(1.0)
+                        for line in lines:
+                            label = Text(myframe, wrap="word", font=("cambria 16"), width = 55, height = round((len(line)/55)), borderwidth=0)
+                            label.pack(anchor="w")                   
+                            label.insert(tk.END, line)
+                            label.config(state=DISABLED)
 
 
-            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client_socket.connect((server_hostname, 5555 ))
+                        mycanvas.update_idletasks()
+                        mycanvas.config(scrollregion=mycanvas.bbox("all"))
+                        mycanvas.yview_moveto(1.0)
+                except ConnectionAbortedError:
+                    pass
+
+            client_socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            opensockets.append(client_socket2)
+            client_socket2.connect((server_hostname, 5555 ))
 
             receive_thread = threading.Thread(target=receive_messages)
             receive_thread.start()
@@ -350,7 +224,7 @@ def join():
                 if textbox.get() != "":
                     message = textbox.get()
                     message = f"{convo_name}: {message}"
-                    client_socket.send(message.encode('utf-8'))
+                    client_socket2.send(message.encode('utf-8'))
 
                     input_string = f" >> {message}"
 
@@ -431,9 +305,8 @@ def join():
             submit.place(x=500, y = 795)
 
 
-
             message = f"{convo_name} has joined the conversation! (say hello)"
-            client_socket.send(message.encode('utf-8'))
+            client_socket2.send(message.encode('utf-8'))
 
             input_string = f" >> {message}"
 
@@ -490,6 +363,11 @@ def startagain():
 
         else:
             continue
+    
+    for socket in opensockets:
+        socket.close()
+
+
 
 
     buttonframe.pack(padx=0, pady=0, fill="x")
@@ -520,7 +398,7 @@ def choose():
     except NameError:
         pass
 
-    
+
     home = Button(root, text = ("←"), font = ("arial 38 bold"), command = startagain, borderwidth = 0, bg = "white", fg = "gray", activebackground = "white", activeforeground = "lightgray")
     home.place(x=25, y=32)
     
@@ -570,6 +448,15 @@ text.bind("<Button-1>", lambda e: callback("https://github.com/PengeSal/LAN-Mess
 
 
 root.mainloop()
+
+
+
+
+
+
+
+
+
 
 
 
