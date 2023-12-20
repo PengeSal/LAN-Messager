@@ -1,1 +1,1 @@
-skibidi rizz ohio
+im better at python than alan turing
