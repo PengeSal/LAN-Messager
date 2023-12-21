@@ -84,7 +84,6 @@ text=Label(buttonframe, text=f"LAN Messager | {socket.gethostname()}", font=myfo
 text.place(x=10,y=2)
 
 text.bind('<B1-Motion>', on_mouse_drag)
-text.bind('<ButtonPress-1>', on_mouse_press)
 
 frame1 = Frame(root, highlightthickness=1, highlightbackground="gray")
 frame1['bg']="white"
@@ -134,7 +133,7 @@ wrapper.configure(borderwidth=0)
 style = ttk.Style()
 style.theme_use('clam')
 
-style.configure("Vertical.TScrollbar", gripcount=0, background="gray95", darkcolor="gainsboro", lightcolor="white", troughcolor="gainsboro", bordercolor="gray", arrowcolor="black")
+style.configure("Vertical.TScrollbar", gripcount=0, background="gray95", darkcolor="gainsboro", lightcolor="gainsboro", troughcolor="gainsboro", bordercolor="gray", arrowcolor="black")
             
 mycanvas=Canvas(wrapper, width=600,height=200, bg="white")
 
@@ -163,9 +162,14 @@ textbox = Entry(textboxborder, font = ("cambria 20"), width = 25)
 
 submit = Button(root, text=("SEND"), font = ("ARIAL 15"), width = 7, bg = "gainsboro", activebackground="lightgray", activeforeground="white")
 
+openfile = Button(root, text=("+"), font = ("ARIAL 15"), width = 7, bg = "gainsboro", activebackground="lightgray", activeforeground="white")
+
 
 
 opensockets = []
+imagesused = []
+image_frames = []
+
 
 def join():
     entrybutton.config(state=DISABLED)
@@ -173,7 +177,7 @@ def join():
         server_hostname = entername.get()
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((server_hostname, 5555))
-
+ 
         opensockets.append(client_socket)
         
         client_socket.close()
@@ -188,37 +192,96 @@ def join():
             convo_name = name.get()
             error.config(text=(""))
             
+
+            def receive_images():
+                global image_frames, imagesused
+                while True:
+                    try:
+                        image_size = int(client_socket4.recv(1024).decode().replace("image:", ""))
+
+                        received_data = b''
+                        while len(received_data) < image_size:
+                            data = client_socket4.recv(1024)
+                            if not data:
+                                break
+                            received_data += data
+
+                        timestamp = int(time.time())
+                        image_path = f"image_{timestamp}.png"
+                        with open(image_path, 'wb') as file:
+                            file.write(received_data)
+                            print(f"Image saved to {image_path}")
+
+                        imagesused.append(str(image_path))
+
+                        try:
+                            bg = PhotoImage(file=image_path)
+
+                            effective_height = min(500, bg.height())
+
+                            frame = Label(myframe, image=bg, anchor="w", compound="left", width=150, height=effective_height)
+                            frame['bg'] = "white"
+                            frame.image = bg  
+                            frame.pack(fill="both", expand=False)
+
+                            image_frames.append(frame)
+
+                            label = Text(myframe, wrap="word", font=("cambria 16"), width=55, height=1, borderwidth=0)
+                            label.pack(anchor="w")
+
+                            mycanvas.update_idletasks()
+                            mycanvas.config(scrollregion=mycanvas.bbox("all"))
+                            mycanvas.yview_moveto(1.0)
+                        except TclError:
+                            continue
+
+                    except ConnectionAbortedError:
+                        pass
+
+
+
             def receive_messages():
                 try:
                     while True:
-                        reply = client_socket2.recv(1024).decode('utf-8')
+                        data = client_socket2.recv(1024).decode("utf-8")
+
+                        reply = data
                         input_string = f" >> {reply}"
 
-                    
                         chars_per_line = 75
 
-                        
                         lines = [input_string[i:i + chars_per_line] for i in range(0, len(input_string), chars_per_line)]
 
                         for line in lines:
-                            label = Text(myframe, wrap="word", font=("cambria 16"), width = 55, height = round((len(line)/55)), borderwidth=0)
-                            label.pack(anchor="w")                   
+                            label = Text(myframe, wrap="word", font=("cambria 16"), width=55, height=round((len(line) / 55)), borderwidth=0)
+                            label.pack(anchor="w")
                             label.insert(tk.END, line)
                             label.config(state=DISABLED)
-
 
                         mycanvas.update_idletasks()
                         mycanvas.config(scrollregion=mycanvas.bbox("all"))
                         mycanvas.yview_moveto(1.0)
+
                 except ConnectionAbortedError:
                     pass
 
             client_socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             opensockets.append(client_socket2)
-            client_socket2.connect((server_hostname, 5555 ))
+            client_socket2.connect((server_hostname, 5555))
 
             receive_thread = threading.Thread(target=receive_messages)
             receive_thread.start()
+
+
+
+            client_socket4 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            opensockets.append(client_socket4)
+            client_socket4.connect((server_hostname, 5556))
+
+            image_receive_thread = threading.Thread(target=receive_images)
+            image_receive_thread.start()
+
+
 
             def send():
                 if textbox.get() != "":
@@ -303,6 +366,56 @@ def join():
 
             submit.config(command=send)
             submit.place(x=500, y = 795)
+
+            def sendimage():
+                file = str(filedialog.askopenfilenames())
+
+                file = file.replace(",", "")
+                file = file.replace("')", "")
+                image_path = file.replace("('", "")
+
+                client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+                try:
+                    client_socket.connect((server_hostname, 5556))
+
+                    with open(image_path, 'rb') as file:
+                        image_data = file.read()
+
+                    image_size = len(image_data)
+                    client_socket.sendall(str(image_size).encode())
+
+                    ack = client_socket.recv(1024).decode()
+                    if ack == 'ACK':
+                        client_socket.sendall(image_data)
+                        print("Image sent successfully!")
+                        client_socket3 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                        client_socket3.connect((server_hostname, 5555))
+                        opensockets.append(client_socket3)
+
+                        message = f"{convo_name} is sending an image..."
+                        client_socket3.send(message.encode('utf-8'))
+
+
+
+                    else:
+                        print("Server did not acknowledge. Image not sent.")
+
+                except Exception as e:
+                    print(f"Error: {e}")
+
+                finally:
+                    try:
+                        client_socket3.close()
+                    except:
+                        pass
+                    client_socket.close()
+
+
+
+            openfile.place(x=28, y = 795)
+            openfile.config(command = sendimage, width = 3)
+
 
 
             message = f"{convo_name} has joined the conversation! (say hello)"
@@ -449,6 +562,8 @@ text.bind("<Button-1>", lambda e: callback("https://github.com/PengeSal/LAN-Mess
 
 root.mainloop()
 
+for image in imagesused:
+    os.remove(image)
 
 
 
