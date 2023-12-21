@@ -7,9 +7,6 @@ def handle_client(client_socket):
     global connected_clients
     while True:
         message = client_socket.recv(1024).decode('utf-8')
-        if message == 'exit':
-            break
-
         for client in connected_clients:
             if client != client_socket: 
                 try:
@@ -20,9 +17,6 @@ def handle_client(client_socket):
                     client.close()
 
         print(f"{message}")
-
-    connected_clients.remove(client_socket)
-    client_socket.close()
 
 hostname = socket.gethostname()
 
@@ -39,4 +33,4 @@ while True:
     connected_clients.append(client_socket)
 
     client_handler = threading.Thread(target=handle_client, args=(client_socket,))
-    client_handler.start()
+    client_handler.start())
