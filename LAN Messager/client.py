@@ -98,6 +98,11 @@ frame.pack(pady=25)
 frame['bg']="white"
 frame.pack(fill=tk.BOTH, expand=False)
 
+def callback(url):
+    webbrowser.open_new_tab(url)
+
+frame.bind("<Button-1>", lambda e: callback("https://github.com/PengeSal/LAN-Messager"))
+
 
 frame2 = Label(frame1, image=bg)
 
@@ -194,49 +199,55 @@ def join():
             
 
             def receive_images():
-                global image_frames, imagesused
-                while True:
-                    try:
-                        image_size = int(client_socket4.recv(1024).decode().replace("image:", ""))
-
-                        received_data = b''
-                        while len(received_data) < image_size:
-                            data = client_socket4.recv(1024)
-                            if not data:
-                                break
-                            received_data += data
-
-                        timestamp = int(time.time())
-                        image_path = f"image_{timestamp}.png"
-                        with open(image_path, 'wb') as file:
-                            file.write(received_data)
-                            print(f"Image saved to {image_path}")
-
-                        imagesused.append(str(image_path))
-
+                try:
+                    while True:
                         try:
-                            bg = PhotoImage(file=image_path)
+                            image_size = int(client_socket4.recv(1024).decode().replace("image:", ""))
+                            received_data = b''
 
-                            effective_height = min(500, bg.height())
+                            while len(received_data) < image_size:
+                                data = client_socket4.recv(1024)
+                                if not data:
+                                    break
+                                received_data += data
 
-                            frame = Label(myframe, image=bg, anchor="w", compound="left", width=150, height=effective_height)
-                            frame['bg'] = "white"
-                            frame.image = bg  
-                            frame.pack(fill="both", expand=False)
+                            timestamp = int(time.time())
+                            image_path = f"image_{timestamp}.png"
 
-                            image_frames.append(frame)
+                            with open(image_path, 'wb') as file:
+                                file.write(received_data)
+                                print(f"Image saved to {image_path}")
 
-                            label = Text(myframe, wrap="word", font=("cambria 16"), width=55, height=1, borderwidth=0)
-                            label.pack(anchor="w")
+                            try:
+                                bg = PhotoImage(file=image_path)
+                                effective_height = min(500, bg.height())
 
-                            mycanvas.update_idletasks()
-                            mycanvas.config(scrollregion=mycanvas.bbox("all"))
-                            mycanvas.yview_moveto(1.0)
-                        except TclError:
-                            continue
+                                frame = Label(myframe, image=bg, anchor="w", compound="left", width=150, height=effective_height)
+                                frame['bg'] = "white"
+                                frame.image = bg
+                                frame.pack(fill="both", expand=False)
 
-                    except ConnectionAbortedError:
-                        pass
+                                image_frames.append(frame)
+
+                                label = Text(myframe, wrap="word", font=("cambria 16"), width=55, height=1, borderwidth=0)
+                                label.pack(anchor="w")
+
+                                mycanvas.update_idletasks()
+                                mycanvas.config(scrollregion=mycanvas.bbox("all"))
+                                mycanvas.yview_moveto(1.0)
+
+                                os.remove(image_path)
+
+                            except TclError:
+                                continue
+
+                        except (OSError, ConnectionAbortedError) as e:
+                            print(f"Error receiving images: {e}")
+                            break
+
+                finally:
+                    client_socket4.close()
+
 
 
 
@@ -468,39 +479,43 @@ namelabel = Label(root, text =("Enter Name you want to display:"), font = ("camb
 entrybutton = Button(root, text = ("JOIN"), font = ("arial 11"), bg = "gainsboro", activebackground="lightgray", activeforeground="white", borderwidth=2, width = 4, command=startjoin)
 
 
-def startagain(): 
+def startagain():
+    global image_frames
+
     for widget in root.winfo_children():
         if widget != top:
             widget.pack()
             widget.pack_forget()
 
-        else:
-            continue
-    
     for socket in opensockets:
         socket.close()
 
 
-
-
     buttonframe.pack(padx=0, pady=0, fill="x")
-    text.place(x=10,y=2)
+    text.place(x=10, y=2)
     frame1.pack(fill=tk.BOTH, expand=True)
     wrapper.pack_forget()
     frame.pack_forget()
-    
-    text1.pack(pady=20, side= TOP, anchor="w")
+
+    text1.pack(pady=20, side=TOP, anchor="w")
     frame2.image = bg
     frame2.pack(pady=25)
-    frame2['bg']="white"
+    frame2['bg'] = "white"
     frame2.pack(fill=tk.BOTH, expand=False)
-    
+
+    def callback(url):
+        webbrowser.open_new_tab(url)
+
+    frame2.bind("<Button-1>", lambda e: callback("https://github.com/PengeSal/LAN-Messager"))
+
     buttonframe2.pack(fill=tk.BOTH)
     buttonframe2.pack(fill=tk.BOTH, expand=True)
     buttonframe2.pack()
     hostbutton.grid(row=0, column=0)
-    text.pack(pady=20, side= TOP, anchor="w")
+    text.pack(pady=20, side=TOP, anchor="w")
     joinbutton.grid(row=0, column=1)
+
+
 
 
 
@@ -522,6 +537,7 @@ def choose():
     text1.pack_forget()
     text.pack_forget()
     buttonframe2.pack_forget()
+
 
     entryborder.place(x=200, y=300)
 
@@ -550,20 +566,15 @@ joinbutton.config(width=20, height=0, fg = "gray", bg = "gainsboro", activebackg
 joinbutton.grid(row=0, column=1)
 
 
-def callback(url):
-    webbrowser.open_new_tab(url)
 
 text=Label(frame1, text="_________________________________________________________________________\n\n Carbon positive since 2023:                        \n https://github.com/PengeSal/LAN-Messager\n_________________________________________________________________________", font=("arial", 16), bg="white", fg="lightgray")
 text.pack(pady=25, side= TOP, anchor="w")
-text.bind("<Button-1>", lambda e: callback("https://github.com/PengeSal/LAN-Messager"))
+
 
 
 
 
 root.mainloop()
-
-for image in imagesused:
-    os.remove(image)
 
 
 
