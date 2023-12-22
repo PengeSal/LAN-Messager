@@ -224,9 +224,10 @@ def join():
                                 new_width = bg.width()
                                 new_height = bg.height()
 
-                                while new_width > 300 and new_height > 200:
-                                    new_width = round(new_width*0.75)
-                                    new_height = round(new_height*0.75)
+                                while new_width > 300 or new_height > 200:
+                                    new_width = round(new_width*0.95)
+                                    new_height = round(new_height*0.95)
+
 
                                 
                                 bg = bg.subsample(bg.width() // new_width, bg.height() // new_height)
