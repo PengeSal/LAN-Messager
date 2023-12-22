@@ -1,6 +1,4 @@
-import socket
-import os
-import time, threading
+import socket, threading
 
 
 connected_clients = []
@@ -17,9 +15,6 @@ def receive_image(client_socket):
         if not data:
             break
         received_data += data
-
-    timestamp = int(time.time())
-    image_path = f"received_image_{timestamp}.png"
 
     for client in connected_clients:
         try:
