@@ -287,8 +287,8 @@ def join():
                         mycanvas.config(scrollregion=mycanvas.bbox("all"))
                         mycanvas.yview_moveto(1.0)
 
-                except ConnectionAbortedError:
-                    pass
+                except (OSError, ConnectionAbortedError) as e:
+                    print(f"Error receiving images: {e}")
 
             client_socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             opensockets.append(client_socket2)
