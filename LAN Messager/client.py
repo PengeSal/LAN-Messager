@@ -38,10 +38,10 @@ top.bind("<Map>", toggle)
 top.bind("<Unmap>", toggle)
 top.title(f"LAN Messager | {socket.gethostname()}")
 
-#icon = PhotoImage(file = "icon.ico")
+icon = PhotoImage(file = "icon.ico")
 root.geometry("700x850")
 root.overrideredirect(True)
-#root.iconphoto(True, icon)
+root.iconphoto(True, icon)
  
 buttonframe=Frame(root)
 
@@ -61,6 +61,35 @@ def on_mouse_drag(evt):
     root.geometry(f"+{x}+{y}")
 
 def quitpy():
+    try:
+        server_hostname = entername.get()
+        convo_name = name.get()
+
+        client_socket5 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        opensockets.append(client_socket5)
+        client_socket5.connect((server_hostname, 5555))
+
+        message = f"{convo_name} has left the conversation! (goodbye)"
+        client_socket5.send(message.encode('utf-8'))
+
+        input_string = f" >> {message}"
+
+        chars_per_line = 75
+        
+        lines = [input_string[i:i + chars_per_line] for i in range(0, len(input_string), chars_per_line)]
+
+        for line in lines:
+            label = Text(myframe, wrap="word", font=("cambria 16"), width = 55, height = round((len(line)/55)), borderwidth=0)
+            label.pack(anchor="w")                   
+            label.insert(tk.END, line)
+            label.config(state=DISABLED)
+
+        mycanvas.update_idletasks()
+        mycanvas.config(scrollregion=mycanvas.bbox("all"))
+        mycanvas.yview_moveto(1.0)
+    except OSError:
+        pass
+    
     root.destroy()
 
 
@@ -105,6 +134,8 @@ frame.bind("<Button-1>", lambda e: callback("https://github.com/PengeSal/LAN-Mes
 
 
 frame2 = Label(frame1, image=bg)
+
+
 
 
 #STARTAGAINWAS HERE 
@@ -289,6 +320,7 @@ def join():
 
                 except (OSError, ConnectionAbortedError) as e:
                     print(f"Error receiving images: {e}")
+                            
 
             client_socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             opensockets.append(client_socket2)
@@ -393,8 +425,7 @@ def join():
             submit.place(x=500, y = 795)
 
             def sendimage():
-                file = str(filedialog.askopenfilenames())
-
+                file = str(filedialog.askopenfilenames(title="Choose PNG"))
                 file = file.replace(",", "")
                 file = file.replace("')", "")
                 image_path = file.replace("('", "")
@@ -438,7 +469,7 @@ def join():
 
 
 
-            openfile.place(x=28, y = 795)
+            openfile.place(x=37, y = 795)
             openfile.config(command = sendimage, width = 3)
 
 
@@ -569,8 +600,6 @@ def choose():
 
     error.place(x=10, y = 560)
     
-
-
 
 
 myfont = font.Font(family="SimSun", size=20, weight="bold")
