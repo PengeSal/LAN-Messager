@@ -220,12 +220,24 @@ def join():
 
                             try:
                                 bg = PhotoImage(file=image_path)
-                                effective_height = min(500, bg.height())
+                                
+                                new_width = bg.width()
+                                new_height = bg.height()
 
-                                frame = Label(myframe, image=bg, anchor="w", compound="left", width=150, height=effective_height)
+                                while new_width > 300 and new_height > 200:
+                                    new_width = round(new_width*0.75)
+                                    new_height = round(new_height*0.75)
+
+                                
+                                bg = bg.subsample(bg.width() // new_width, bg.height() // new_height)
+
+
+
+
+                                frame = Label(myframe, image=bg, anchor="w", compound="left")
                                 frame['bg'] = "white"
                                 frame.image = bg
-                                frame.pack(fill="both", expand=False)
+                                frame.pack(fill="both", expand=False, padx=35)
 
                                 image_frames.append(frame)
 
