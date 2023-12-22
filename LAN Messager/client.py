@@ -239,6 +239,7 @@ def join():
                                 os.remove(image_path)
 
                             except TclError:
+                                os.remove(image_path)
                                 continue
 
                         except (OSError, ConnectionAbortedError) as e:
