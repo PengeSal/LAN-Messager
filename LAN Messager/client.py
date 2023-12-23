@@ -449,7 +449,7 @@ def join():
                         client_socket3.connect((server_hostname, 5555))
                         opensockets.append(client_socket3)
 
-                        message = f"{convo_name} is sending an image..."
+                        message = f"{convo_name}:"
                         client_socket3.send(message.encode('utf-8'))
 
 
