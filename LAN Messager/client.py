@@ -669,7 +669,8 @@ def join():
             mycanvas.config(scrollregion=mycanvas.bbox("all"))
             mycanvas.yview_moveto(1.0)
 
-            labele.focus_set()
+            textbox.delete(0,"end")
+            textbox.config(fg="black")
 
 
 
