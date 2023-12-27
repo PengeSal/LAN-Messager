@@ -113,9 +113,10 @@ buttonframe2.pack(fill=tk.BOTH, expand=True)
 buttonframe2.pack()
 
 hennay = False
+num = 3
 
 def thread():
-    global hennay, server_process, imageserver_process
+    global hennay, server_process, imageserver_process, num
 
     if not hennay:
         hennay = True
@@ -125,6 +126,7 @@ def thread():
         imageserver_process = subprocess.Popen(['python', 'imageserver.py'])
 
         hostbutton.config(text="\nSTOP HOSTING CONVO\n")
+        num = num-1
         messagebox.showinfo("LAN Messager", f"Started Hosting Server on {socket.gethostname()}.")
 
     else:
@@ -136,7 +138,7 @@ def thread():
             imageserver_process.terminate()
 
         hostbutton.config(text="\nHOST CONVERSATION\n")
-        messagebox.showwarning("LAN Messager", f"Stopped Hosting Server on {socket.gethostname()}.\nYou have 2 more FREE server hosts remaining.")
+        messagebox.showwarning("LAN Messager", f"Stopped Hosting Server on {socket.gethostname()}.\nYou have {num} more FREE server hosts remaining.")
 
 server_process = False
 imageserver_process = False
