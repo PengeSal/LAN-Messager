@@ -58,9 +58,6 @@ def on_mouse_drag(evt):
     y = root.winfo_y() + deltay
     root.geometry(f"+{x}+{y}")
 
-def quitpy():    
-    root.destroy()
-
 
 buttonframe.bind('<B1-Motion>', on_mouse_drag)
 buttonframe.bind('<ButtonPress-1>', on_mouse_press)
@@ -69,7 +66,6 @@ buttonframe.pack(padx=0, pady=0, fill="x")
 buttonframe.config(width=3, height=0, bg = "gainsboro", highlightthickness=1, highlightbackground="gray")
 
 button1=Button(buttonframe, text=" × ", font=("arial", 13))
-button1.config(width=3, height=0, fg = "black", bg = "gainsboro", activebackground="red", activeforeground="white", borderwidth=0, command=quitpy)
 button1.grid(row=0, column=7)
 
 button3=Button(buttonframe, text=" - ", font=("arial", 13))
@@ -142,7 +138,17 @@ def thread():
         hostbutton.config(text="\nHOST CONVERSATION\n")
         messagebox.showwarning("LAN Messager", f"Stopped Hosting Server on {socket.gethostname()}.\nYou have 2 more FREE server hosts remaining.")
 
-        
+server_process = False
+imageserver_process = False
+
+def quitpy():
+    if server_process:
+        server_process.terminate()
+    if imageserver_process:
+        imageserver_process.terminate()
+    root.destroy()
+
+button1.config(width=3, height=0, fg = "black", bg = "gainsboro", activebackground="red", activeforeground="white", borderwidth=0, command=quitpy)
 
 def host():
     thread1 = threading.Thread(target=thread)
