@@ -233,7 +233,7 @@ def join():
         client_socket.close()
         error.config(text=(""))
 
-        if name.get() == "":
+        if name.get() == "" or name.get() == "Enter Name":
             entrybutton.config(state=NORMAL)
             error.config(text=(">> ERROR: You have to enter a name, dumbass."))
         
@@ -459,7 +459,7 @@ def join():
 
             
             def send(textmessage, image):
-                if textbox.get() != "" or image == True:
+                if textbox.get() != "" or image == True or textbox.get() != "Say Something":
                     if enterpfp.get() != "":
                         image_path = enterpfp.get()
                         try:
