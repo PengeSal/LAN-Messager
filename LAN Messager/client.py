@@ -8,7 +8,7 @@ import sys
 import ctypes, random
 from tkinter import *
 from tkinter.ttk import Style, Frame as fp
-from tkinter import scrolledtext, ttk, filedialog, font
+from tkinter import scrolledtext, ttk, filedialog, font, messagebox
 from inspect import getsourcefile
 from os.path import abspath
 from functools import reduce
@@ -105,8 +105,6 @@ frame.bind("<Button-1>", lambda e: callback("https://github.com/PengeSal/LAN-Mes
 frame2 = Label(frame1, image=bg)
 
 
-
-
 #STARTAGAINWAS HERE 
 
 
@@ -118,8 +116,38 @@ buttonframe2.pack(fill=tk.BOTH)
 buttonframe2.pack(fill=tk.BOTH, expand=True)
 buttonframe2.pack()
 
+hennay = False
+
+def thread():
+    global hennay, server_process, imageserver_process
+
+    if not hennay:
+        hennay = True
+
+        # Start subprocesses
+        server_process = subprocess.Popen(['python', 'server.py'])
+        imageserver_process = subprocess.Popen(['python', 'imageserver.py'])
+
+        hostbutton.config(text="\nSTOP HOSTING CONVO\n")
+        messagebox.showinfo("LAN Messager", f"Started Hosting Server on {socket.gethostname()}.")
+
+    else:
+        hennay = False
+
+        if server_process:
+            server_process.terminate()
+        if imageserver_process:
+            imageserver_process.terminate()
+
+        hostbutton.config(text="\nHOST CONVERSATION\n")
+        messagebox.showwarning("LAN Messager", f"Stopped Hosting Server on {socket.gethostname()}.\nYou have 2 more FREE server hosts remaining.")
+
+        
+
 def host():
-    pass
+    thread1 = threading.Thread(target=thread)
+    thread1.start()
+
 
 
 myfont = font.Font(family="SimSun", size=20, weight="bold")
@@ -336,7 +364,7 @@ def join():
                                 print(f"Profile picture saved to {image_path}")
 
                             try:
-                                if parts[1] != "07925532041callme":
+                                if parts[1] != "+4407925532041 call me":
                                     myframe2 = Frame(myframe, bg="white")
                                     myframe2.pack(padx=5, pady=7, anchor="nw")
 
@@ -393,11 +421,11 @@ def join():
 
                                     # Insert the formatted text with different tags for formatting
                                     text_widget.insert("end", formatted_parts, "bold")
-                                    text_widget.insert("end", " has joined the conversation! (hello)", "normal")
+                                    text_widget.insert("end", " has joined the conversation! (hello)", "italic")
 
                                     # Configure tags for formatting
                                     text_widget.tag_configure("bold", font=("cambria", 17, "bold"))
-                                    text_widget.tag_configure("normal", font=("cambria", 17, "italic"))
+                                    text_widget.tag_configure("italic", font=("cambria", 17, "italic"))
 
                                     text_widget.config(state=DISABLED)
 
@@ -459,7 +487,7 @@ def join():
 
             
             def send(textmessage, image):
-                if textbox.get() != "" or image == True or textbox.get() != "Say Something":
+                if textbox.get() != "" and textbox.get() != "Say Something" or image == True:
                     if enterpfp.get() != "":
                         image_path = enterpfp.get()
                         try:
@@ -662,7 +690,7 @@ def join():
             labele = Label(myframe, text="", font=("cambria 60"), bg="white")
 
 
-            send("07925532041callme", True)
+            send("+4407925532041 call me", True)
 
 
             mycanvas.update_idletasks()
