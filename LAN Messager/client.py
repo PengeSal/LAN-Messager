@@ -57,7 +57,7 @@ def on_mouse_drag(evt):
     y = root.winfo_y() + deltay
     root.geometry(f"+{x}+{y}")
 
-
+# bind movement to the title bar (buttonframe) #
 buttonframe.bind("<B1-Motion>", on_mouse_drag)
 buttonframe.bind("<ButtonPress-1>", on_mouse_press)
 
