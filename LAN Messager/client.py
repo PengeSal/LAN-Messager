@@ -1,8 +1,8 @@
 
 # https://github.com/PengeSal/LAN-Messager #
+
+
 # import libraries # 
-
-
 import tkinter as tk
 import socket
 import subprocess
@@ -15,7 +15,6 @@ from tkinter import ttk, filedialog, font, messagebox, Tk
 
 
 # initialise window #
-
 root = Tk()
 root["bg"] = "white"
 root.geometry("700x850")
@@ -30,7 +29,6 @@ def toggle(event):
         root.withdraw()
 
 # toplevel for max/minimising # 
-
 top = Toplevel(root)
 top.geometry("0x0+10000+10000")
 top.protocol("WM_DELETE_WINDOW", root.destroy)
@@ -40,7 +38,6 @@ top.title(f"LAN Messager | {socket.gethostname()}")
 
 
 # cutsom title bar :O #
-
 buttonframe = Frame(root)
 
 for i in range(5):
@@ -48,7 +45,6 @@ for i in range(5):
 
 
 # drag functionality for title bar #
-
 def on_mouse_press(evt):
     global xp, yp
     xp = evt.x
@@ -67,7 +63,6 @@ buttonframe.bind("<ButtonPress-1>", on_mouse_press)
 
 
 # display title bar # 
-
 buttonframe.pack(padx=0, pady=0, fill="x")
 buttonframe.config(
     width=3, height=0, bg="gainsboro", highlightthickness=1, highlightbackground="gray"
@@ -75,7 +70,6 @@ buttonframe.config(
 
 
 # buttonz + label #
-
 button3 = Button(buttonframe, text=" - ", font=("arial", 13))
 button3.config(
     width=3,
@@ -104,14 +98,12 @@ text.bind("<B1-Motion>", on_mouse_drag)
 
 
 # main part of the window (frame1) # 
-
 frame1 = Frame(root, highlightthickness=1, highlightbackground="gray")
 frame1["bg"] = "white"
 frame1.pack(fill=tk.BOTH, expand=True)
 
 
 # adding stuff in the window #
-
 text1 = Label(frame1, text="\n\n", font=("arial", 16), bg="white", fg="#97d180")
 text1.pack(pady=20, side=TOP, anchor="w")
 
@@ -126,7 +118,6 @@ frame2 = Label(frame1, image=bg)
 
 
 # buttonframe for host and join buttons #
-
 buttonframe2 = Frame(frame1)
 buttonframe2.config(bg="white")
 buttonframe2.columnconfigure(0, weight=1)
@@ -672,6 +663,9 @@ def join():
                     # close socket no matter what #
                     client_socket2.close()
 
+
+            # set up sockets before threads are started #
+
             client_socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             opensockets.append(client_socket2)
             client_socket2.connect((server_hostname, 5555))
@@ -686,12 +680,17 @@ def join():
             image_receive_thread = threading.Thread(target=receive_images)
             image_receive_thread.start()
 
+
+            # function for sending messages #
+
             def send(textmessage, image):
+                # makes sure text isnt nothing or default messagebox text #
                 if (
                     textbox.get() != ""
                     and textbox.get() != " >> Say Something"
-                    or image == True
+                    or image == True # makes sure not sending a join message #
                 ):
+                    # if there is no profile picture chosen or profile picture is invalid it just sets the default #
                     if enterpfp.get() != "":
                         image_path = enterpfp.get()
                         try:
@@ -701,20 +700,28 @@ def join():
                     else:
                         image_path = "pfp.png"
 
+                    # sets message as textmessage argument #
                     message = textmessage
+
+                    # set up socket to connect to server #
                     client_socket6 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     opensockets.append(client_socket6)
 
                     try:
+                        # connect to messageserver (port 5555) # 
                         client_socket6.connect((server_hostname, 5555))
 
+                        # open image and get image data #
                         with open(image_path, "rb") as file:
                             image_data = file.read()
                         print("")
 
                         name1 = name.get()
 
+                        # get image size #
                         image_size = len(image_data)
+
+                        # send information to server with separators for easy... separation #
                         client_socket6.sendall(
                             str(
                                 name1
@@ -724,16 +731,12 @@ def join():
                                 + str(image_size)
                             ).encode()
                         )
-
+                        # recieve acknowledgement #
                         ack = client_socket6.recv(1024).decode()
-                        if ack == "ACK":
+
+                        if ack == "ACK": # if acknowledgement, send image data # 
                             client_socket6.sendall(image_data)
                             print("Image sent successfully!")
-                            client_socket5 = socket.socket(
-                                socket.AF_INET, socket.SOCK_STREAM
-                            )
-                            client_socket5.connect((server_hostname, 5555))
-                            opensockets.append(client_socket5)
 
                         else:
                             print("Server did not acknowledge. Image not sent.")
@@ -744,14 +747,14 @@ def join():
                         print(f"Error: {e}")
 
                     finally:
-                        try:
-                            client_socket5.close()
-                        except:
-                            pass
+                        # close socket no matter what #
                         client_socket6.close()
 
                 else:
                     pass
+
+
+            # vv extremely efficient vv #
 
             bg = PhotoImage(file="logo2.png")
             frame.config(image=bg)
@@ -803,9 +806,11 @@ def join():
 
             textboxborder.place(x=100, y=795)
 
+            # send message when enter is pressed #
             def on_enter(event):
                 send(textbox.get(), False)
 
+            # when textbox is clicked it removes temporary text and makes colour black # 
             def remove_temp_text(e):
                 if textbox.get() == " >> Say Something":
                     textbox.delete(0, "end")
@@ -813,48 +818,53 @@ def join():
                 else:
                     pass
 
+            # when user clicks on something else it puts in grey temporary text #
             def temp_text(e):
                 if textbox.get() == "":
                     textbox.insert(0, " >> Say Something")
                     textbox.config(fg="gray65")
                 else:
                     pass
-
+            
+            # display textbox and bind actions to it #
             textbox.pack(pady=2, padx=2)
             textbox.bind("<Return>", on_enter)
             textbox.bind("<FocusIn>", remove_temp_text)
             textbox.bind("<FocusOut>", temp_text)
 
+            # config submit button to send a join message (image = false means its a join message) #
             submit.config(command=lambda: send(textbox.get(), False))
             submit.place(x=500, y=795)
 
+            # function to send image  #
             def sendimage():
-                file = str(filedialog.askopenfilenames(title="Choose PNG"))
-                file = file.replace(",", "")
-                file = file.replace("')", "")
-                image_path = file.replace("('", "")
+                # choose image path #
+                file = filedialog.askopenfilenames(title="Choose PNG")
+                image_path = str(file[0])
 
+                # set up socket #
                 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                opensockets.append(client_socket)
 
                 try:
+                    # connect to image server (port 5556) #
                     client_socket.connect((server_hostname, 5556))
 
+                    # get image data #
                     with open(image_path, "rb") as file:
                         image_data = file.read()
-                    print(image_data)
+                    print("")
 
+                    # get and send image size #
                     image_size = len(image_data)
                     client_socket.sendall(str(image_size).encode())
 
+                    # recieve acknowledgement #
                     ack = client_socket.recv(1024).decode()
-                    if ack == "ACK":
+
+                    if ack == "ACK": # if acknowledgement, send image data # 
                         client_socket.sendall(image_data)
                         print("Image sent successfully!")
-                        client_socket3 = socket.socket(
-                            socket.AF_INET, socket.SOCK_STREAM
-                        )
-                        client_socket3.connect((server_hostname, 5555))
-                        opensockets.append(client_socket3)
 
                     else:
                         print("Server did not acknowledge. Image not sent.")
@@ -863,32 +873,32 @@ def join():
                     print(f"Error: {e}")
 
                 finally:
-                    try:
-                        client_socket3.close()
-                    except:
-                        pass
                     client_socket.close()
 
                     whattosend = f"is sending an image..."
 
                     send(whattosend, True)
-                    print("ok bro")
+                    print("Sent message successfully!")
 
             openfile.place(x=37, y=795)
             openfile.config(command=sendimage, width=3)
 
             labele = Label(myframe, text="", font=("cambria 60"), bg="white")
 
+            # my phone number means send a join message #
             send("+4407925532041 call me", True)
 
+            # update scrollbar to the bottom #
             mycanvas.update_idletasks()
             mycanvas.config(scrollregion=mycanvas.bbox("all"))
             mycanvas.yview_moveto(1.0)
 
+            # clear textbox in case user already highlighted it #
             textbox.delete(0, "end")
             textbox.config(fg="black")
 
     except OSError:
+        # restore button if client cannot connect/no server of that name # 
         entrybutton.config(state=NORMAL)
         error.config(
             text=(">> ERROR: That's not a computer connected to this network.")
@@ -896,26 +906,25 @@ def join():
 
 
 def startjoin():
+    # join checks can take a few seconds so its a thread #
     join1 = threading.Thread(target=join)
     join1.start()
 
 
 def pfp():
-    file = str(filedialog.askopenfilenames(title="Choose PNG"))
-    file = file.replace(",", "")
-    file = file.replace("')", "")
-    image_path = file.replace("('", "")
+    # let user choose profile picture #
+    file = filedialog.askopenfilenames(title="Choose PNG")
+    image_path = str(file[0])
 
     enterpfp.config(state=NORMAL)
     enterpfp.delete(0, tk.END)
     enterpfp.insert(tk.END, image_path)
-    enterpfp.config(state=DISABLED)
+    enterpfp.config(state=DISABLED) # prevent user from editing directory #
 
-
+# borders for text entries #
 entryborder = Frame(root, bg="gray")
 entryborder2 = Frame(root, bg="gray")
 entryborder3 = Frame(root, bg="gray")
-
 
 def remove_temp_text2(e):
     if name.get() == "Enter Name":
@@ -923,7 +932,6 @@ def remove_temp_text2(e):
         name.config(fg="black")
     else:
         pass
-
 
 def temp_text2(e):
     if name.get() == "":
@@ -945,7 +953,6 @@ def remove_temp_text3(e):
         entername.config(fg="black")
     else:
         pass
-
 
 def temp_text3(e):
     if entername.get() == "":
@@ -1130,4 +1137,3 @@ text.pack(pady=25, side=TOP, anchor="w")
 
 
 root.mainloop()
-
