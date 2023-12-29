@@ -20,7 +20,7 @@ root["bg"] = "white"
 root.geometry("700x850")
 root.overrideredirect(True)
 
-
+# toggle minimise/maximise #
 def toggle(event):
     if event.type == EventType.Map:
         root.deiconify()
