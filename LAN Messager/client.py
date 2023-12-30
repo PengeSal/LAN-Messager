@@ -575,7 +575,6 @@ def join():
                                             0, len(input_string), chars_per_line
                                         )
                                     ]
-                                    print(str(lines))
 
                                     # displays first line no matter what #
                                     label = Text(
@@ -595,7 +594,6 @@ def join():
                                     if len(lines) > 1:
                                         # repeats until all lines are created #
                                         for index, line in enumerate(lines[1:]):
-                                            print(line)
                                             text_widget = Text(
                                                 myframe2,
                                                 wrap="word",
