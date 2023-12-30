@@ -14,6 +14,8 @@ from tkinter import *
 from tkinter import ttk, filedialog, font, messagebox, Tk
 
 
+###################################################################################################################################
+
 # initialise window #
 root = Tk()
 root["bg"] = "white"
@@ -36,13 +38,13 @@ top.bind("<Map>", toggle)
 top.bind("<Unmap>", toggle)
 top.title(f"LAN Messager | {socket.gethostname()}")
 
+###################################################################################################################################
 
 # cutsom title bar :O #
 buttonframe = Frame(root)
 
 for i in range(5):
     buttonframe.columnconfigure(1, weight=1)
-
 
 # drag functionality for title bar #
 def on_mouse_press(evt):
@@ -67,7 +69,6 @@ buttonframe.pack(padx=0, pady=0, fill="x")
 buttonframe.config(
     width=3, height=0, bg="gainsboro", highlightthickness=1, highlightbackground="gray"
 )
-
 
 # buttonz + label #
 button3 = Button(buttonframe, text=" - ", font=("arial", 13))
@@ -94,8 +95,10 @@ text = Label(
 )
 text.place(x=10, y=2)
 
+# bind motion to text too #
 text.bind("<B1-Motion>", on_mouse_drag)
 
+###################################################################################################################################
 
 # main part of the window (frame1) # 
 frame1 = Frame(root, highlightthickness=1, highlightbackground="gray")
@@ -124,12 +127,13 @@ buttonframe2.columnconfigure(0, weight=1)
 buttonframe2.columnconfigure(1, weight=1)
 buttonframe2.pack(fill=tk.BOTH, expand=True)
 
+###################################################################################################################################
+
 
 # perfectly named variables #
 
 hennay = False # state of hostbutton #
 num = 3 # amount of free trials #
-
 
 def thread():
     global hennay, server_process, imageserver_process, num
@@ -168,16 +172,14 @@ def thread():
             f"Stopped Hosting Server on {socket.gethostname()}.\nYou have {num} more FREE server hosts remaining.",
         )
 
+###################################################################################################################################
 
 # server processes (duh) #
-
 server_process = False
 imageserver_process = False
 
-
 # make sure it stops hosting when they disconnect (technicians when no close socket:  >:( # 
 # i think it closes anyway but just to be safe #
-
 def quitpy():
     if server_process:
         server_process.terminate()
@@ -198,13 +200,14 @@ button1.config(
     command=quitpy,
 )
 
+###################################################################################################################################
 
 # start thread cos it takes a few seconds # 
-
 def host():
     thread1 = threading.Thread(target=thread)
     thread1.start()
 
+###################################################################################################################################
 
 myfont = font.Font(family="SimSun", size=20, weight="bold")
 
@@ -240,10 +243,10 @@ imageframe2.place(x=8.5, y=457.5)
 discount = Label(root, text=" 30% OFF! ", bg="red", fg="white", font="cambria 40 bold")
 discount.place(x=217, y=470)
 
+###################################################################################################################################
 
 # thread to make the offer flash (you know you want it) #
 # perfectly optimised.. #
-
 def flash():
     while True:
         try:
@@ -269,7 +272,7 @@ freetrial = Label(
 )
 freetrial.place(x=230, y=545, anchor="nw")
 
-
+###################################################################################################################################
 
 # setting up widgets for the messaging part before they are packed/placed in join # 
 
@@ -358,7 +361,9 @@ image_frames = [] # list of images used to prevent garbage collection or somethi
 # sets up event which will stop threads when startagain is called # 
 stop_flag = threading.Event()
 
+###################################################################################################################################
 
+# join function #
 def join():
     # disables join button to prevent spamming #
     entrybutton.config(state=DISABLED)
@@ -378,6 +383,8 @@ def join():
 
             # clears event to be set later in staragain #
             stop_flag.clear()
+
+            #######################################################################################################################
 
             # recieve images thread #
             def receive_images():
@@ -462,6 +469,8 @@ def join():
                 finally:
                     # close socket no matter what #
                     client_socket4.close()
+
+            #######################################################################################################################
 
             def receive_messages():
                 try:
@@ -680,9 +689,9 @@ def join():
             image_receive_thread = threading.Thread(target=receive_images)
             image_receive_thread.start()
 
+            #######################################################################################################################
 
             # function for sending messages #
-
             def send(textmessage, image):
                 # makes sure text isnt nothing or default messagebox text #
                 if (
@@ -753,6 +762,7 @@ def join():
                 else:
                     pass
 
+            #######################################################################################################################
 
             # vv extremely efficient vv #
 
@@ -836,6 +846,8 @@ def join():
             submit.config(command=lambda: send(textbox.get(), False))
             submit.place(x=500, y=795)
 
+            #######################################################################################################################
+
             # function to send image  #
             def sendimage():
                 # choose image path #
@@ -897,6 +909,8 @@ def join():
             textbox.delete(0, "end")
             textbox.config(fg="black")
 
+            #######################################################################################################################
+
     except OSError:
         # restore button if client cannot connect/no server of that name # 
         entrybutton.config(state=NORMAL)
@@ -904,12 +918,14 @@ def join():
             text=(">> ERROR: That's not a computer connected to this network.")
         )
 
+###################################################################################################################################
 
 def startjoin():
     # join checks can take a few seconds so its a thread #
     join1 = threading.Thread(target=join)
     join1.start()
 
+###################################################################################################################################
 
 def pfp():
     # let user choose profile picture #
@@ -921,11 +937,14 @@ def pfp():
     enterpfp.insert(tk.END, image_path)
     enterpfp.config(state=DISABLED) # prevent user from editing directory #
 
+###################################################################################################################################
+
 # borders for text entries #
 entryborder = Frame(root, bg="gray")
 entryborder2 = Frame(root, bg="gray")
 entryborder3 = Frame(root, bg="gray")
 
+# when textbox is clicked it removes temporary text and makes colour black # 
 def remove_temp_text2(e):
     if name.get() == "Enter Name":
         name.delete(0, "end")
@@ -933,6 +952,7 @@ def remove_temp_text2(e):
     else:
         pass
 
+# when user clicks on something else it puts in grey temporary text #
 def temp_text2(e):
     if name.get() == "":
         name.insert(0, "Enter Name")
@@ -940,13 +960,13 @@ def temp_text2(e):
     else:
         pass
 
-
+# display textbox and bind actions to it #
 name = Entry(entryborder2, width=24, font=("cambria 16"), fg="gray65")
 name.insert(0, "Enter Name")
 name.bind("<FocusIn>", remove_temp_text2)
 name.bind("<FocusOut>", temp_text2)
 
-
+# when textbox is clicked it removes temporary text and makes colour black #
 def remove_temp_text3(e):
     if entername.get() == "Enter PC":
         entername.delete(0, "end")
@@ -954,6 +974,7 @@ def remove_temp_text3(e):
     else:
         pass
 
+# when user clicks on something else it puts in grey temporary text #
 def temp_text3(e):
     if entername.get() == "":
         entername.insert(0, "Enter PC")
@@ -961,11 +982,14 @@ def temp_text3(e):
     else:
         pass
 
-
+# display textbox and bind actions to it #
 entername = Entry(entryborder, width=20, font=("cambria 16"), fg="gray65")
 entername.insert(0, "Enter PC")
 entername.bind("<FocusIn>", remove_temp_text3)
 entername.bind("<FocusOut>", temp_text3)
+
+
+# define widgets for choose screen #
 
 enterpfp = Entry(entryborder3, width=17, font=("cambria 16"))
 enterpfp.config(state=DISABLED)
@@ -1010,19 +1034,27 @@ pfpbutton = Button(
     command=pfp,
 )
 
+###################################################################################################################################
 
+# backarrow function #
 def startagain():
     global image_frames, labele
 
+    # stop receive images and messages threads #
     stop_flag.set()
 
+    # remove widgets #
     for widget in root.winfo_children():
         if widget != top:
             widget.pack()
             widget.pack_forget()
 
+    # close sockets #
     for socket in opensockets:
         socket.close()
+
+
+    # replace widgets on start menu #
 
     buttonframe.pack(padx=0, pady=0, fill="x")
     text.place(x=10, y=2)
@@ -1035,7 +1067,6 @@ def startagain():
     frame2.pack(pady=25)
     frame2["bg"] = "white"
     frame2.pack(fill=tk.BOTH, expand=False)
-
 
     frame2.bind("<Button-1>", lambda e: webbrowser.open_new_tab("https://github.com/PengeSal/LAN-Messager"))
 
@@ -1053,13 +1084,16 @@ def startagain():
     discount.place(x=217, y=470)
     freetrial.place(x=230, y=545, anchor="nw")
 
+###################################################################################################################################
 
+# choose name, server, pfp screen #
 def choose():
     try:
         frame2.pack_forget()
     except NameError:
         pass
-
+    
+    # backarrow #
     home = Button(
         root,
         text=("←"),
@@ -1071,7 +1105,11 @@ def choose():
         activebackground="white",
         activeforeground="lightgray",
     )
+    # display back arrow #
     home.place(x=25, y=32)
+
+
+    # display widgets defined earlier #
 
     bg = PhotoImage(file="logo2.png")
     frame.config(image=bg)
@@ -1109,9 +1147,11 @@ def choose():
 
     error.place(x=10, y=700)
 
+###################################################################################################################################
 
 myfont = font.Font(family="SimSun", size=20, weight="bold")
 
+# join button #
 joinbutton = Button(buttonframe2, text="\nJOIN CONVERSATION\n", font=myfont)
 joinbutton.config(
     width=20,
@@ -1123,9 +1163,10 @@ joinbutton.config(
     borderwidth=2,
     command=choose,
 )
+# display join button #
 joinbutton.grid(row=0, column=1)
 
-
+# cool text + link #
 text = Label(
     frame1,
     text="_________________________________________________________________________\n\n Carbon positive since 2023:                        \n https://github.com/PengeSal/LAN-Messager\n_________________________________________________________________________",
@@ -1133,7 +1174,10 @@ text = Label(
     bg="white",
     fg="lightgray",
 )
+# display text #
 text.pack(pady=25, side=TOP, anchor="w")
 
+###################################################################################################################################
 
+# freaking mainloop bro #
 root.mainloop()
