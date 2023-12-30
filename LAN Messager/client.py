@@ -575,6 +575,8 @@ def join():
                                             0, len(input_string), chars_per_line
                                         )
                                     ]
+                                    print(str(lines))
+
                                     # displays first line no matter what #
                                     label = Text(
                                         buttonframe1,
@@ -592,7 +594,8 @@ def join():
                                     # if there are more than 1 line in lines #
                                     if len(lines) > 1:
                                         # repeats until all lines are created #
-                                        for line in enumerate(lines[1:]):
+                                        for index, line in enumerate(lines[1:]):
+                                            print(line)
                                             text_widget = Text(
                                                 myframe2,
                                                 wrap="word",
@@ -603,7 +606,7 @@ def join():
                                             )
                                             # display text #
                                             text_widget.insert("end", line)
-                                            text_widget.config(state=DISABLED) # disable text widget #
+                                            text_widget.config(state=DISABLED)  # disable text widget #
                                             text_widget.pack(anchor="w", padx=74)
 
                                 else:
