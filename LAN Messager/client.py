@@ -568,7 +568,7 @@ def join():
 
                                     # get current time #
                                     current_time = datetime.now().strftime("%I:%M %p")
-                                    text_widget.insert("end", f" {current_time}", "italic2")
+                                    text_widget.insert("end", f"   {current_time}", "italic2")
                                     text_widget.config(state=DISABLED) # disable text widget #
                                     text_widget.grid(row=0, column=1, sticky="w")
 
@@ -620,7 +620,7 @@ def join():
                                             # display text #
                                             text_widget.insert("end", line)
                                             text_widget.config(state=DISABLED)  # disable text widget #
-                                            text_widget.pack(anchor="w", padx=74)
+                                            text_widget.pack(anchor="w", padx=72)
 
                                 else:
                                     # if it has my phone number, its just a join message and is displayed differently #
