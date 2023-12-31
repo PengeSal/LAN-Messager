@@ -184,11 +184,11 @@ imageserver_process = False
 # make sure it stops hosting when they disconnect (technicians when no close socket:  >:( # 
 # i think it closes anyway but just to be safe #
 def quitpy():
+    root.destroy() # destroy the window :O # 
     if server_process:
         server_process.terminate()
     if imageserver_process:
         imageserver_process.terminate()
-    root.destroy() # destroy the window :O # 
 
 button1 = Button(buttonframe, text=" × ", font=("arial", 13))
 button1.grid(row=0, column=7)
@@ -565,7 +565,7 @@ def join():
                                         borderwidth=0,
                                     )
                                     text_widget.insert("end", name1, "bold2")
-                                    
+
                                     # get current time #
                                     current_time = datetime.now().strftime("%I:%M %p")
                                     text_widget.insert("end", f" {current_time}", "italic2")
