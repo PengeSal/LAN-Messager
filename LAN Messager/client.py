@@ -12,6 +12,7 @@ import threading
 import webbrowser
 import os
 import time
+from datetime import datetime
 from tkinter import *
 from tkinter import ttk, filedialog, font, messagebox, Tk
 
@@ -533,6 +534,7 @@ def join():
                                     # resize and display profile pictre #
 
                                     bg = PhotoImage(file=image_path)
+
                                     # set new dimmensions for pfp and resize it #
                                     new_width = 50
                                     new_height = 50
@@ -562,10 +564,21 @@ def join():
                                         height=1,
                                         borderwidth=0,
                                     )
-                                    text_widget.insert("end", name1)
+                                    text_widget.insert("end", name1, "bold2")
+                                    
+                                    # get current time #
+                                    current_time = datetime.now().strftime("%I:%M %p")
+                                    text_widget.insert("end", f" {current_time}", "italic2")
                                     text_widget.config(state=DISABLED) # disable text widget #
                                     text_widget.grid(row=0, column=1, sticky="w")
 
+                                    text_widget.tag_configure(
+                                        "bold2", font=("cambria", 17, "bold"), foreground = "black"
+                                    )
+                                    text_widget.tag_configure(
+                                        "italic2", font=("cambria", 12, "italic"), foreground = "gray"
+                                    )
+                                    
                                     # defines max characters per line and input_ string #
                                     input_string = message
                                     chars_per_line = 40
@@ -1178,7 +1191,7 @@ text = Label(
     fg="lightgray",
 )
 # display text #
-text.pack(pady=25, side=TOP, anchor="w")
+text.pack(pady=25, side=TOP, anchor="w")                       
 
 ###################################################################################################################################
 
