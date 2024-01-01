@@ -1,5 +1,8 @@
-# LAN Messager #<sub> It's not "Messenger" idk why</sub>
+# LAN Messager #
 
+<sub> It's not "Messenger" idk why</sub>
+
+---
 
 A simple LAN messaging utility, fully coded with python's standard library.
 
