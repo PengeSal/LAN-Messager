@@ -467,7 +467,6 @@ def join():
                                 continue # continue loop to receive more images #
 
                         except (OSError, ConnectionAbortedError) as e:
-                            print(f"Error receiving images: {e}")
                             continue
 
                 finally:
