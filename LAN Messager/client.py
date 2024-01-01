@@ -369,17 +369,17 @@ stop_flag = threading.Event()
 
 ###################################################################################################################################
 
+# save image function #
 def pressed(listposition): # listposition arg keeps track of... position in list #
-    timestamp = int(time.time())
-    image_path = f"image_{timestamp}.png"
-    downloads_path = os.path.expanduser("~/Downloads")
+    downloads_path = filedialog.asksaveasfilename(title="Save Image")
 
-    with open(image_path, "wb") as file:
+    # if the user canceled the file dialog, return early #
+    if not downloads_path:
+        return
+
+    with open(f"{downloads_path}.png", "wb") as file:
         file.write(imagefiles[listposition])
-        print(f"Image saved to {image_path}")
 
-    shutil.move(image_path, downloads_path)
-    os.startfile(os.path.expanduser("~\\Downloads"))
     
 ###################################################################################################################################
 
@@ -885,7 +885,11 @@ def join():
             def sendimage():
                 # choose image path #
                 file = filedialog.askopenfilenames(title="Choose PNG")
-                image_path = str(file[0])
+                try:
+                    image_path = str(file[0])
+                except IndexError:
+                    pass
+
 
                 # set up socket #
                 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -911,8 +915,15 @@ def join():
                         client_socket.sendall(image_data)
                         print("Image sent successfully!")
 
+                        whattosend = f"is sending an image..."
+
+                        send(whattosend, True)
+                        print("Sent message successfully!")
+
                     else:
                         print("Server did not acknowledge. Image not sent.")
+                    
+                    
 
                 except Exception as e:
                     print(f"Error: {e}")
@@ -920,10 +931,7 @@ def join():
                 finally:
                     client_socket.close()
 
-                    whattosend = f"is sending an image..."
-
-                    send(whattosend, True)
-                    print("Sent message successfully!")
+            #######################################################################################################################
 
             openfile.place(x=37, y=795)
             openfile.config(command=sendimage, width=3)
