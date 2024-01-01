@@ -4,7 +4,7 @@
 
 ---
 
-Simple Messaging GUI only using python's standard library.
+### Simple Messaging GUI only using python's standard library. ###
 
 ---
 <sub>Includes customisable profile pictures and image transfer!!1</sub>
