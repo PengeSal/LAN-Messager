@@ -620,7 +620,7 @@ def join():
                                             # display text #
                                             text_widget.insert("end", line)
                                             text_widget.config(state=DISABLED)  # disable text widget #
-                                            text_widget.pack(anchor="w", padx=72)
+                                            text_widget.pack(anchor="w", padx=74)
 
                                 else:
                                     # if it has my phone number, its just a join message and is displayed differently #
