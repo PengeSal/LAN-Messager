@@ -100,6 +100,7 @@ text.place(x=10, y=2)
 
 # bind motion to text too #
 text.bind("<B1-Motion>", on_mouse_drag)
+text.bind("<ButtonPress-1>", on_mouse_press)
 
 ###################################################################################################################################
 
