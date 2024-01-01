@@ -12,6 +12,7 @@ import threading
 import webbrowser
 import os
 import time
+import shutil
 from datetime import datetime
 from tkinter import *
 from tkinter import ttk, filedialog, font, messagebox, Tk
@@ -360,6 +361,7 @@ openfile = Button(
 
 opensockets = [] # list of sockets to disconnect from later #
 image_frames = [] # list of images used to prevent garbage collection or something #
+imagefiles = [] # holds imagedata for download without having to hold onto the actual image files #
 
 
 # sets up event which will stop threads when startagain is called # 
@@ -367,8 +369,23 @@ stop_flag = threading.Event()
 
 ###################################################################################################################################
 
+def pressed(listposition): # listposition arg keeps track of... position in list #
+    timestamp = int(time.time())
+    image_path = f"image_{timestamp}.png"
+    downloads_path = os.path.expanduser("~/Downloads")
+
+    with open(image_path, "wb") as file:
+        file.write(imagefiles[listposition])
+        print(f"Image saved to {image_path}")
+
+    shutil.move(image_path, downloads_path)
+    os.startfile(os.path.expanduser("~\\Downloads"))
+    
+###################################################################################################################################
+
 # join function #
 def join():
+    global imagefiles
     # disables join button to prevent spamming #
     entrybutton.config(state=DISABLED)
 
@@ -393,6 +410,8 @@ def join():
             # recieve images thread #
             def receive_images():
                 try:
+                    # set value at -1 so list starts at 0 #
+                    listamount = -1 
                     # thread stops when startagain is called so they dont build up and cause performance issues #
                     while not stop_flag.is_set():
                         try:
@@ -459,8 +478,12 @@ def join():
                                 mycanvas.config(scrollregion=mycanvas.bbox("all"))
                                 mycanvas.yview_moveto(1.0)
 
-                                # delete image file #
-                                os.remove(image_path)
+                                os.remove(image_path) # delete image file #
+
+                                listamount = listamount+1 # increase position in list as more images come in #
+                                imagefiles.append(received_data) # ^^ add image data to list in this position ^^ #
+                                frame.bind("<ButtonPress-1>", lambda event, listposition=listamount: pressed(listposition)) # make clicking call pressed function #
+
 
                             except TclError: # invalid image type/data #
                                 os.remove(image_path)
