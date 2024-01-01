@@ -467,7 +467,7 @@ def join():
 
                         except (OSError, ConnectionAbortedError) as e:
                             print(f"Error receiving images: {e}")
-                            break
+                            continue
 
                 finally:
                     # close socket no matter what #
@@ -682,7 +682,7 @@ def join():
 
                         except (OSError, ConnectionAbortedError) as e:
                             print(f"Error receiving profile pictures: {e}")
-                            break
+                            continue
 
                 finally:
                     # close socket no matter what #
