@@ -1,7 +1,8 @@
-# LAN Messager #
+# PyLan #
 
-#  #
-It's not "Messenger"
+
+A simple LAN messaging utility, fully coded with python's standard library.
+
 ---
 
 # ⚠️ WARNING ⚠️ #
