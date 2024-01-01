@@ -1,4 +1,4 @@
-# LAN Messager #
+# 🌐 LAN Messager #
 
 <sub>It's not "Messenger" idk why</sub>
 
