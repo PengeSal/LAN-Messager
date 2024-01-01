@@ -775,8 +775,6 @@ def join():
                         # close socket no matter what #
                         client_socket6.close()
 
-                else:
-                    pass
 
             #######################################################################################################################
 
@@ -841,16 +839,12 @@ def join():
                 if textbox.get() == " >> Say Something":
                     textbox.delete(0, "end")
                     textbox.config(fg="black")
-                else:
-                    pass
 
             # when user clicks on something else it puts in grey temporary text #
             def temp_text(e):
                 if textbox.get() == "":
                     textbox.insert(0, " >> Say Something")
                     textbox.config(fg="gray65")
-                else:
-                    pass
             
             # display textbox and bind actions to it #
             textbox.pack(pady=2, padx=2)
@@ -965,16 +959,12 @@ def remove_temp_text2(e):
     if name.get() == "Enter Name":
         name.delete(0, "end")
         name.config(fg="black")
-    else:
-        pass
 
 # when user clicks on something else it puts in grey temporary text #
 def temp_text2(e):
     if name.get() == "":
         name.insert(0, "Enter Name")
         name.config(fg="gray65")
-    else:
-        pass
 
 # display textbox and bind actions to it #
 name = Entry(entryborder2, width=24, font=("cambria 16"), fg="gray65")
@@ -987,16 +977,12 @@ def remove_temp_text3(e):
     if entername.get() == "Enter PC":
         entername.delete(0, "end")
         entername.config(fg="black")
-    else:
-        pass
 
 # when user clicks on something else it puts in grey temporary text #
 def temp_text3(e):
     if entername.get() == "":
         entername.insert(0, "Enter PC")
         entername.config(fg="gray65")
-    else:
-        pass
 
 # display textbox and bind actions to it #
 entername = Entry(entryborder, width=20, font=("cambria 16"), fg="gray65")
