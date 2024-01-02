@@ -12,7 +12,6 @@ import threading
 import webbrowser
 import os
 import time
-import shutil
 from datetime import datetime
 from tkinter import *
 from tkinter import ttk, filedialog, font, messagebox, Tk
