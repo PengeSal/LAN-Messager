@@ -421,6 +421,7 @@ def join():
                                 client_socket4.recv(1024).decode().replace("image:", "")
                             )
 
+                            time.sleep(0.5)
                             # get image data # 
                             received_data = b""
 
@@ -448,6 +449,7 @@ def join():
                                 new_width = bg.width()
                                 new_height = bg.height()
 
+
                                 # resizes image until it fits without compromising image proportions #
                                 while new_width > 300 or new_height > 200:
                                     # resizes small amounts each time so it is near the biggest size it can be and still fit #
@@ -459,7 +461,8 @@ def join():
                                     bg.width() // new_width, bg.height() // new_height
                                 )
 
-                                # create label with background as the iamge #
+
+                                # create label with background as the image #
                                 frame = Label(
                                     myframe, image=bg, anchor="w", compound="left"
                                 )
@@ -486,6 +489,7 @@ def join():
                                 frame.bind("<ButtonPress-1>", lambda event, listposition=listamount: pressed(listposition)) # make clicking call pressed function #
 
                                 lastmessage = "image"
+                                print(f"DEBUG1: {lastmessage}")
 
 
                             except TclError: # invalid image type/data #
@@ -570,7 +574,7 @@ def join():
                                     new_height = 50
                                     bg = bg.subsample(bg.width() // new_width, bg.height() // new_height)
                                     # create label with bg of resized image #
-                                    profile_picture_label = Label(buttonframe1, image=bg, anchor="w")
+                                    profile_picture_label = Label(buttonframe1, image=bg, anchor="w", width = 50, height = 50)
                                     profile_picture_label["bg"] = "white"
                                     profile_picture_label.image = bg
                                     profile_picture_label.grid(
@@ -651,11 +655,11 @@ def join():
                                     lastperson = name1
 
                                 elif lastperson == name1 and parts[1] != "+4407925532041 call me" and lasttime == datetime.now().strftime("%I:%M %p"):
-                                    print(f"DEBUG: lastperson: {lastperson}, name1: {name1} {lastmessage}")
+                                    print(f"DEBUG2: lastperson: {lastperson}, name1: {name1} {lastmessage}")
                                     input_string = message
                                     chars_per_line = 40
 
-                                    if lastmessage == "image":
+                                    if lastmessage != "message":
                                         myframe2 = Frame(myframe, bg="white")
                                         myframe2.pack(padx=5, pady=7, anchor="nw")
 
@@ -733,6 +737,7 @@ def join():
                                 skibidi_ohio_thread.start()
 
                                 lastmessage = "message" 
+                                print(f"DEBUG3: {lastmessage}")
 
                             except TclError:  # invalid image type/data #
                                 os.remove(image_path)
