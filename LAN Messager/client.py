@@ -408,6 +408,8 @@ def join():
 
             # recieve images thread #
             def receive_images():
+                global lastmessage
+                lastmessage = ""
                 try:
                     # set value at -1 so list starts at 0 #
                     listamount = -1 
@@ -483,6 +485,8 @@ def join():
                                 imagefiles.append(received_data) # ^^ add image data to list in this position ^^ #
                                 frame.bind("<ButtonPress-1>", lambda event, listposition=listamount: pressed(listposition)) # make clicking call pressed function #
 
+                                lastmessage = "image"
+
 
                             except TclError: # invalid image type/data #
                                 os.remove(image_path)
@@ -498,6 +502,7 @@ def join():
             #######################################################################################################################
 
             def receive_messages():
+                global lastmessage
                 lastperson = "no"
                 name1 = "nuh uh"
                 lasttime = "no"
@@ -646,9 +651,13 @@ def join():
                                     lastperson = name1
 
                                 elif lastperson == name1 and parts[1] != "+4407925532041 call me" and lasttime == datetime.now().strftime("%I:%M %p"):
-                                    print(f"DEBUG: lastperson: {lastperson}, name1: {name1}")
+                                    print(f"DEBUG: lastperson: {lastperson}, name1: {name1} {lastmessage}")
                                     input_string = message
                                     chars_per_line = 40
+
+                                    if lastmessage == "image":
+                                        myframe2 = Frame(myframe, bg="white")
+                                        myframe2.pack(padx=5, pady=7, anchor="nw")
 
                                     # splits text into different lines so it doesn't go off the page #
                                     lines = [
@@ -723,7 +732,7 @@ def join():
                                 skibidi_ohio_thread = threading.Thread(target=osremove)
                                 skibidi_ohio_thread.start()
 
-                                
+                                lastmessage = "message" 
 
                             except TclError:  # invalid image type/data #
                                 os.remove(image_path)
