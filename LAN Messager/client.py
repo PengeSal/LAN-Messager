@@ -536,6 +536,9 @@ def join():
                                 file.write(received_data)
                                 print(f"Profile picture saved to {image_path}")
 
+                            # get name of sender from parts list #
+                            name1 = str(parts[0])
+
                             try:
                                 # if it doesnt have my phone number, its not a join message #
                                 if parts[1] != "+4407925532041 call me" and lastperson != name1 or parts[1] != "+4407925532041 call me" and lasttime != datetime.now().strftime("%I:%M %p"):
@@ -570,7 +573,7 @@ def join():
                                     )
                                     # get name of sender from parts list #
                                     name1 = str(parts[0])
-                                    lastperson = name1
+                                    #lastperson = name1
 
                                     # display name of sender above message #
                                     input_string = message
@@ -714,7 +717,7 @@ def join():
                                 skibidi_ohio_thread = threading.Thread(target=osremove)
                                 skibidi_ohio_thread.start()
 
-                                #lastperson = name1
+                                lastperson = name1
 
                             except TclError:  # invalid image type/data #
                                 os.remove(image_path)
