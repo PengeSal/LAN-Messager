@@ -569,7 +569,7 @@ def join():
                                     profile_picture_label["bg"] = "white"
                                     profile_picture_label.image = bg
                                     profile_picture_label.grid(
-                                        row=0, column=0, rowspan=2, padx=(0, 5)  # put it in the correct column #
+                                        row=0, column=0, rowspan=2, padx=(0, 7)  # put it in the correct column #
                                     )
                                     # get name of sender from parts list #
                                     name1 = str(parts[0])
@@ -641,7 +641,7 @@ def join():
                                             # display text #
                                             text_widget.insert("end", line)
                                             text_widget.config(state=DISABLED)  # disable text widget #
-                                            text_widget.pack(anchor="w", padx=72)
+                                            text_widget.pack(anchor="w", padx=74)
                                     
                                     lastperson = name1
 
@@ -669,7 +669,7 @@ def join():
                                         # display text #
                                         text_widget.insert("end", line)
                                         text_widget.config(state=DISABLED)  # disable text widget #
-                                        text_widget.pack(anchor="w", padx=72)
+                                        text_widget.pack(anchor="w", padx=74)
                                     
                                     lastperson = name1
 
