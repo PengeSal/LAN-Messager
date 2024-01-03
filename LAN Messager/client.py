@@ -463,7 +463,7 @@ def join():
                                 )
                                 frame["bg"] = "white"
                                 frame.image = bg
-                                frame.pack(fill="both", expand=False, padx=77)
+                                frame.pack(fill="both", expand=False, padx=80)
 
                                 # keep track of image to prevent garbage collection #
                                 image_frames.append(frame)
@@ -569,7 +569,7 @@ def join():
                                     profile_picture_label["bg"] = "white"
                                     profile_picture_label.image = bg
                                     profile_picture_label.grid(
-                                        row=0, column=0, rowspan=2, padx=(0, 7)  # put it in the correct column #
+                                        row=0, column=0, rowspan=2, padx=4  # put it in the correct column #
                                     )
                                     # get name of sender from parts list #
                                     name1 = str(parts[0])
