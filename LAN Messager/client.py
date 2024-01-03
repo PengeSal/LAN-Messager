@@ -498,6 +498,10 @@ def join():
             #######################################################################################################################
 
             def receive_messages():
+                lastperson = "no"
+                name1 = "nuh uh"
+                lasttime = "no"
+                current_time = "nuh uh"
                 try:
                     # thread stops when startagain is called so they dont build up and cause performance issues #
                     while not stop_flag.is_set():
@@ -516,7 +520,7 @@ def join():
                             # get image data #
                             received_data = b""
 
-                            # uses imagesize to check if all the image data has been recieved #
+                            # uses imagesize to check if all the image data has been received #
                             while len(received_data) < image_size:
                                 data = client_socket2.recv(1024)
                                 if not data:
@@ -527,54 +531,46 @@ def join():
                             timestamp = int(time.time())
                             image_path = f"profile_{timestamp}.png"
 
-                            
                             # convert image data to file #
-                            with open(image_path, "wb") as file: # uses image name generated earlier #
+                            with open(image_path, "wb") as file:  # uses image name generated earlier #
                                 file.write(received_data)
                                 print(f"Profile picture saved to {image_path}")
 
                             try:
                                 # if it doesnt have my phone number, its not a join message #
-                                if parts[1] != "+4407925532041 call me":
+                                if parts[1] != "+4407925532041 call me" and lastperson != name1 or parts[1] != "+4407925532041 call me" and lasttime != datetime.now().strftime("%I:%M %p"):
                                     # creates frame all message elements are in #
                                     myframe2 = Frame(myframe, bg="white")
                                     myframe2.pack(padx=5, pady=7, anchor="nw")
 
                                     # its called buttonframe but its just a grid with the first column containing the profile picture -
                                     # - and the second column containing the profile name of the sender and the message #
-                                    buttonframe1 = Frame(
-                                        myframe2, width=200, bg="white"
-                                    )
-                                    # create the 2 colummns #
+                                    buttonframe1 = Frame(myframe2, width=200, bg="white")
+                                    # create the 2 columns #
                                     buttonframe1.columnconfigure(0, weight=1)
                                     buttonframe1.columnconfigure(1, weight=1)
 
                                     buttonframe1.pack(anchor="nw", padx=12)
                                     buttonframe1.pack_propagate(False)
 
-
-                                    # resize and display profile pictre #
+                                    # resize and display profile picture #
 
                                     bg = PhotoImage(file=image_path)
 
-                                    # set new dimmensions for pfp and resize it #
+                                    # set new dimensions for pfp and resize it #
                                     new_width = 50
                                     new_height = 50
-                                    bg = bg.subsample(
-                                        bg.width() // new_width,
-                                        bg.height() // new_height,
-                                    )
+                                    bg = bg.subsample(bg.width() // new_width, bg.height() // new_height)
                                     # create label with bg of resized image #
-                                    profile_picture_label = Label(
-                                        buttonframe1, image=bg, anchor="w"
-                                    )
+                                    profile_picture_label = Label(buttonframe1, image=bg, anchor="w")
                                     profile_picture_label["bg"] = "white"
                                     profile_picture_label.image = bg
                                     profile_picture_label.grid(
-                                        row=0, column=0, rowspan=2, padx=(0, 5) # put it in the correct column #
+                                        row=0, column=0, rowspan=2, padx=(0, 5)  # put it in the correct column #
                                     )
                                     # get name of sender from parts list #
                                     name1 = str(parts[0])
+                                    lastperson = name1
 
                                     # display name of sender above message #
                                     input_string = message
@@ -590,30 +586,30 @@ def join():
 
                                     # get current time #
                                     current_time = datetime.now().strftime("%I:%M %p")
+                                    lasttime = current_time
+
                                     text_widget.insert("end", f"   {current_time}", "italic2")
-                                    text_widget.config(state=DISABLED) # disable text widget #
+                                    text_widget.config(state=DISABLED)  # disable text widget #
                                     text_widget.grid(row=0, column=1, sticky="w")
 
                                     text_widget.tag_configure(
-                                        "bold2", font=("cambria", 17, "bold"), foreground = "black"
+                                        "bold2", font=("cambria", 17, "bold"), foreground="black"
                                     )
                                     text_widget.tag_configure(
-                                        "italic2", font=("cambria", 12, "italic"), foreground = "gray"
+                                        "italic2", font=("cambria", 12, "italic"), foreground="gray"
                                     )
-                                    
+
                                     # defines max characters per line and input_ string #
                                     input_string = message
                                     chars_per_line = 40
 
-                                    # splits text into different lines so it doesnt go off the page #
+                                    # splits text into different lines so it doesn't go off the page #
                                     lines = [
                                         input_string[i : i + chars_per_line]
-                                        for i in range(
-                                            0, len(input_string), chars_per_line
-                                        )
+                                        for i in range(0, len(input_string), chars_per_line)
                                     ]
 
-                                    # displays first line no matter what #
+                                    # displays the first line no matter what #
                                     label = Text(
                                         buttonframe1,
                                         wrap="word",
@@ -624,7 +620,7 @@ def join():
                                     )
                                     # display text #
                                     label.insert("end", lines[0])
-                                    label.config(state=DISABLED) # disable text widget #
+                                    label.config(state=DISABLED)  # disable text widget #
                                     label.grid(row=1, column=1, sticky="w")
 
                                     # if there are more than 1 line in lines #
@@ -642,10 +638,36 @@ def join():
                                             # display text #
                                             text_widget.insert("end", line)
                                             text_widget.config(state=DISABLED)  # disable text widget #
-                                            text_widget.pack(anchor="w", padx=74)
+                                            text_widget.pack(anchor="w", padx=72)
+
+                                elif lastperson == name1 and parts[1] != "+4407925532041 call me" and lasttime == datetime.now().strftime("%I:%M %p"):
+                                    print(f"DEBUG: lastperson: {lastperson}, name1: {name1}")
+                                    input_string = message
+                                    chars_per_line = 40
+
+                                    # splits text into different lines so it doesn't go off the page #
+                                    lines = [
+                                        input_string[i : i + chars_per_line]
+                                        for i in range(0, len(input_string), chars_per_line)
+                                    ]
+
+                                    # repeats until all lines are created #
+                                    for index, line in enumerate(lines[0:]):
+                                        text_widget = Text(
+                                            myframe2,
+                                            wrap="word",
+                                            font=("cambria 16"),
+                                            width=40,
+                                            height=round((len(line) / 40)),
+                                            borderwidth=0,
+                                        )
+                                        # display text #
+                                        text_widget.insert("end", line)
+                                        text_widget.config(state=DISABLED)  # disable text widget #
+                                        text_widget.pack(anchor="w", padx=72)
 
                                 else:
-                                    # if it has my phone number, its just a join message and is displayed differently #
+                                    # if it has my phone number, it's just a join message and is displayed differently #
                                     formatted_parts = parts[0].title()
 
                                     text_widget = Text(
@@ -662,18 +684,12 @@ def join():
 
                                     text_widget.insert("end", formatted_parts, "bold")
                                     text_widget.insert(
-                                        "end",
-                                        " has joined the conversation! (hello)",
-                                        "italic",
+                                        "end", " has joined the conversation! (hello)", "italic"
                                     )
 
-                                    # configure tags (they are needed as the first part is different style to second part) #
-                                    text_widget.tag_configure(
-                                        "bold", font=("cambria", 17, "bold")
-                                    )
-                                    text_widget.tag_configure(
-                                        "italic", font=("cambria", 17, "italic")
-                                    )
+                                    # configure tags (they are needed as the first part is a different style than the second part) #
+                                    text_widget.tag_configure("bold", font=("cambria", 17, "bold"))
+                                    text_widget.tag_configure("italic", font=("cambria", 17, "italic"))
 
                                     # disable text widget #
                                     text_widget.config(state=DISABLED)
@@ -698,9 +714,11 @@ def join():
                                 skibidi_ohio_thread = threading.Thread(target=osremove)
                                 skibidi_ohio_thread.start()
 
-                            except TclError: # invalid image type/data #
+                                #lastperson = name1
+
+                            except TclError:  # invalid image type/data #
                                 os.remove(image_path)
-                                continue # continue loop to receive more images #
+                                continue  # continue loop to receive more images #
 
                         except (OSError, ConnectionAbortedError) as e:
                             print(f"Error receiving profile pictures: {e}")
@@ -709,6 +727,7 @@ def join():
                 finally:
                     # close socket no matter what #
                     client_socket2.close()
+
 
 
             # set up sockets before threads are started #
