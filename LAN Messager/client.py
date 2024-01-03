@@ -642,6 +642,8 @@ def join():
                                             text_widget.insert("end", line)
                                             text_widget.config(state=DISABLED)  # disable text widget #
                                             text_widget.pack(anchor="w", padx=72)
+                                    
+                                    lastperson = name1
 
                                 elif lastperson == name1 and parts[1] != "+4407925532041 call me" and lasttime == datetime.now().strftime("%I:%M %p"):
                                     print(f"DEBUG: lastperson: {lastperson}, name1: {name1}")
@@ -668,6 +670,8 @@ def join():
                                         text_widget.insert("end", line)
                                         text_widget.config(state=DISABLED)  # disable text widget #
                                         text_widget.pack(anchor="w", padx=72)
+                                    
+                                    lastperson = name1
 
                                 else:
                                     # if it has my phone number, it's just a join message and is displayed differently #
@@ -697,6 +701,8 @@ def join():
                                     # disable text widget #
                                     text_widget.config(state=DISABLED)
 
+                                    lastperson = "Eric Cartman"
+
                                 # space below images/messages #
                                 labele.pack_forget()
                                 labele.pack()
@@ -717,7 +723,7 @@ def join():
                                 skibidi_ohio_thread = threading.Thread(target=osremove)
                                 skibidi_ohio_thread.start()
 
-                                lastperson = name1
+                                
 
                             except TclError:  # invalid image type/data #
                                 os.remove(image_path)
