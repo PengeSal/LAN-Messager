@@ -541,7 +541,7 @@ def join():
 
                             try:
                                 # if it doesnt have my phone number, its not a join message #
-                                if parts[1] != "+4407925532041 call me" and lastperson != name1 or parts[1] != "+4407925532041 call me" and lasttime != datetime.now().strftime("%I:%M %p"):
+                                if parts[1] != "+4407925532041 call me" and lastperson != name1 or parts[1] != "+4407925532041 call me" and lasttime != datetime.now().strftime("%I:%M %p") or message == "is sending an image...":
                                     # creates frame all message elements are in #
                                     myframe2 = Frame(myframe, bg="white")
                                     myframe2.pack(padx=5, pady=7, anchor="nw")
