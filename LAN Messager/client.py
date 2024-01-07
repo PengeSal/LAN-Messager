@@ -13,7 +13,6 @@ import webbrowser
 import os
 import time
 import convertapi
-import requests
 from datetime import datetime
 from tkinter import *
 from tkinter import ttk, filedialog, font, messagebox, Tk  
@@ -116,7 +115,7 @@ frame1.pack(fill=tk.BOTH, expand=True)
 text1 = Label(frame1, text="\n\n", font=("arial", 16), bg="white", fg="#97d180")
 text1.pack(pady=20, side=TOP, anchor="w")
 
-bg = PhotoImage(file="logo.png")
+bg = PhotoImage(file="assets/logo.png")
 frame = Label(frame1, image=bg)
 frame["bg"] = "white"
 frame.pack(fill=tk.BOTH, expand=False, pady=25)
@@ -239,7 +238,7 @@ frameborder.place(x=0, y=450, relwidth=1.0, relheight=0.2)
 actualframe = Frame(frameborder, bg="gainsboro")
 actualframe.pack(padx=2, pady=2, fill=tk.BOTH, expand=True)
 
-image = PhotoImage(file="image.png")
+image = PhotoImage(file="assets/image.png")
 imageframe = Label(root, image=image)
 imageframe.place(x=532, y=457.5)
 
@@ -781,15 +780,27 @@ def join():
                     and textbox.get() != " >> Say Something"
                     or image == True # makes sure not sending a join message #
                 ):
+                    image_path = enterpfp.get()
+
+                    # convert jpg to png if applicable #
+                    if image_path.lower().endswith(('.jpg', '.jpeg')):
+                        convertapi.api_secret = 'oCUMHrlmbUEUIzCX'
+                        convertapi.convert('png', {
+                            'File': image_path
+                        }, from_format = 'jpg').save_files(image_path)
+
+                    # set up socket #
+                    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    opensockets.append(client_socket)
+
                     # if there is no profile picture chosen or profile picture is invalid it just sets the default #
                     if enterpfp.get() != "":
-                        image_path = enterpfp.get()
                         try:
                             test = PhotoImage(file=image_path)
                         except TclError:
-                            image_path = "pfp.png"
+                            image_path = "assets/pfp.png"
                     else:
-                        image_path = "pfp.png"
+                        image_path = "assets/pfp.png"
 
                     # sets message as textmessage argument #
                     message = textmessage
@@ -846,7 +857,7 @@ def join():
 
             # vv extremely efficient vv #
 
-            bg = PhotoImage(file="logo2.png")
+            bg = PhotoImage(file="assets/logo2.png")
             frame.config(image=bg)
             frame.image = bg
             frame.pack(pady=25)
@@ -1191,7 +1202,7 @@ def choose():
 
     # display widgets defined earlier #
 
-    bg = PhotoImage(file="logo2.png")
+    bg = PhotoImage(file="assets/logo2.png")
     frame.config(image=bg)
     frame.image = bg
     frame.pack(pady=25)
