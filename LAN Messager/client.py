@@ -12,9 +12,11 @@ import threading
 import webbrowser
 import os
 import time
+import convertapi
+import requests
 from datetime import datetime
 from tkinter import *
-from tkinter import ttk, filedialog, font, messagebox, Tk
+from tkinter import ttk, filedialog, font, messagebox, Tk  
 
 
 ###################################################################################################################################
@@ -922,15 +924,22 @@ def join():
 
             #######################################################################################################################
 
-            # function to send image  #
+
+            # function to send image #
             def sendimage():
                 # choose image path #
-                file = filedialog.askopenfilenames(title="Choose PNG")
+                file = filedialog.askopenfilenames(title="Choose Image")
                 try:
                     image_path = str(file[0])
                 except IndexError:
-                    pass
+                    return
 
+                # convert jpg to png if applicable #
+                if image_path.lower().endswith(('.jpg', '.jpeg')):
+                    convertapi.api_secret = 'oCUMHrlmbUEUIzCX'
+                    convertapi.convert('png', {
+                        'File': image_path
+                    }, from_format = 'jpg').save_files(image_path)
 
                 # set up socket #
                 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -940,37 +949,34 @@ def join():
                     # connect to image server (port 5556) #
                     client_socket.connect((server_hostname, 5556))
 
-                    # get image data #
+                    # get image data
                     with open(image_path, "rb") as file:
                         image_data = file.read()
-                    print("")
 
                     # get and send image size #
                     image_size = len(image_data)
                     client_socket.sendall(str(image_size).encode())
 
-                    # recieve acknowledgement #
+                    # receive acknowledgement #
                     ack = client_socket.recv(1024).decode()
 
-                    if ack == "ACK": # if acknowledgement, send image data # 
+                    if ack == "ACK":  # if acknowledgment, send image data #
                         client_socket.sendall(image_data)
                         print("Image sent successfully!")
 
                         whattosend = f"is sending an image..."
-
                         send(whattosend, True)
                         print("Sent message successfully!")
 
                     else:
                         print("Server did not acknowledge. Image not sent.")
-                    
-                    
 
                 except Exception as e:
                     print(f"Error: {e}")
 
                 finally:
                     client_socket.close()
+            
 
             #######################################################################################################################
 
